@@ -29,14 +29,16 @@
 
   qt-src-qtbase-patches =
     (makeRemotePatchesWithPrefix "qtbase" [
-      {
-        url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/6.x.x/patches/android-backtrace.diff";
+      /*
+        {
+        url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/5.x.x/patches/android-backtrace.diff";
         hash = "sha256-/el09OJR/e0NUfGTxEtsx1Gk/JfdzNhC7VsfBVfp+BU=";
       }
       {
-        url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/6.x.x/patches/android-new-ndk.diff";
+        url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/5.x.x/patches/android-new-ndk.diff";
         hash = "sha256-EwJoRjF6SFDVsDxztiJMqqj/KoaNs/WIhVQqKBgBqMY=";
       }
+      */
     ])
     ++ [
       #./patch-qt-5.15.0-qtbase-limits.diff
