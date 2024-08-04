@@ -4,7 +4,7 @@
 }: let
   # ===========================================================================
   qt-version-micro = "0";
-  qt-version = "6.6.${qt-version-micro}";
+  qt-version = "5.15.${qt-version-micro}";
 
   # https://qt.mirror.constant.com/archive/qt/5.15/5.15.0/single/qt-everywhere-src-5.15.0.tar.xz
   qt-src-archive-full = let
@@ -13,8 +13,8 @@
     qt-src-url-host = "qt.mirror.constant.com";
   in
     pkgs.fetchzip {
-      url = "https://${qt-src-url-host}/archive/qt/6.6/6.6.0/single/qt-everywhere-src-${qt-version}.tar.xz";
-      hash = "sha256-vqncbrV9eOCVDv4blbCl1LeKHDzvUqPk5MdIc+Uz/80=";
+      url = "https://${qt-src-url-host}/archive/qt/5.15/5.15.0/single/qt-everywhere-src-${qt-version}.tar.xz";
+      hash = "sha256-GR8egTgHmciurgTRkBnAZ7P1KSeG9BItX0fmz/rBmPM=";
     };
 
   makeRemotePatchesWithPrefix = prefix: elems: let
@@ -29,8 +29,7 @@
 
   qt-src-qtbase-patches =
     (makeRemotePatchesWithPrefix "qtbase" [
-      /*
-        {
+      {
         url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/5.x.x/patches/android-backtrace.diff";
         hash = "sha256-/el09OJR/e0NUfGTxEtsx1Gk/JfdzNhC7VsfBVfp+BU=";
       }
@@ -38,10 +37,9 @@
         url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/5.x.x/patches/android-new-ndk.diff";
         hash = "sha256-EwJoRjF6SFDVsDxztiJMqqj/KoaNs/WIhVQqKBgBqMY=";
       }
-      */
     ])
     ++ [
-      #./patch-qt-5.15.0-qtbase-limits.diff
+      ./patch-qt-5.15.0-qtbase-limits.diff
     ];
 
   qt-src = pkgs.applyPatches {
@@ -116,7 +114,7 @@
   configureFlagsSkipList = [
     "qt3d"
     "qtactiveqt"
-    # "qtandroidextras"
+    "qtandroidextras"
     # "qtbase"
     "qtcharts"
     # "qtconnectivity"
@@ -134,7 +132,7 @@
     "qtpurchasing"
     "qtquick3d"
     "qtquickcontrols"
-    # "qtquickcontrols2"
+    "qtquickcontrols2"
     "qtquicktimeline"
     "qtremoteobjects"
     "qtscript"
