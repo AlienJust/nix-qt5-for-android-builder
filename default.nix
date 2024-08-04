@@ -112,7 +112,8 @@
   # ===========================================================================
 
   configureFlagsSkipList = [
-    "qt3d"
+    /*
+      "qt3d"
     "qtactiveqt"
     "qtandroidextras"
     "qtbase"
@@ -154,6 +155,7 @@
     "qtwinextras"
     "qtx11extras"
     "qtxmlpatterns"
+    */
   ];
 
   configureFlags =
