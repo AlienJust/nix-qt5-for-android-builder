@@ -14,7 +14,7 @@
   in
     pkgs.fetchzip {
       url = "https://${qt-src-url-host}/archive/qt/6.6/6.6.0/single/qt-everywhere-src-${qt-version}.tar.xz";
-      hash = "sha256-GR8egTgHmciurgTRkBnAZ7P1KSeG9BItX0fmz/rBmPM=";
+      hash = "sha256-vqncbrV9eOCVDv4blbCl1LeKHDzvUqPk5MdIc+Uz/80=";
     };
 
   makeRemotePatchesWithPrefix = prefix: elems: let
