@@ -1,41 +1,46 @@
 {
   pkgs,
   lib,
-}:
-
-let
-
+}: let
   # ===========================================================================
-
   qt-version-micro = "0";
-  qt-version = "5.15.${qt-version-micro}";
+  qt-version = "6.6.${qt-version-micro}";
 
   # https://qt.mirror.constant.com/archive/qt/5.15/5.15.0/single/qt-everywhere-src-5.15.0.tar.xz
   qt-src-archive-full = let
     # src_url_host = "download.qt.io";
     # src_url_host = "qt-mirror.dannhauer.de";
     qt-src-url-host = "qt.mirror.constant.com";
-  in pkgs.fetchzip {
-    url = "https://${qt-src-url-host}/archive/qt/5.15/5.15.0/single/qt-everywhere-src-${qt-version}.tar.xz";
-    hash = "sha256-GR8egTgHmciurgTRkBnAZ7P1KSeG9BItX0fmz/rBmPM=";
-  };
+  in
+    pkgs.fetchzip {
+      url = "https://${qt-src-url-host}/archive/qt/6.6/6.6.0/single/qt-everywhere-src-${qt-version}.tar.xz";
+      hash = "sha256-GR8egTgHmciurgTRkBnAZ7P1KSeG9BItX0fmz/rBmPM=";
+    };
 
   makeRemotePatchesWithPrefix = prefix: elems: let
-    xs = map (x: (x // { stripLen = 1; extraPrefix = "${prefix}/"; })) elems;
-  in map pkgs.fetchpatch xs;
+    xs = map (x: (x
+      // {
+        stripLen = 1;
+        extraPrefix = "${prefix}/";
+      }))
+    elems;
+  in
+    map pkgs.fetchpatch xs;
 
-  qt-src-qtbase-patches = (makeRemotePatchesWithPrefix "qtbase" [
-    {
-      url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/5.x.x/patches/android-backtrace.diff";
-      hash = "sha256-/el09OJR/e0NUfGTxEtsx1Gk/JfdzNhC7VsfBVfp+BU=";
-    }
-    {
-      url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/5.x.x/patches/android-new-ndk.diff";
-      hash = "sha256-EwJoRjF6SFDVsDxztiJMqqj/KoaNs/WIhVQqKBgBqMY=";
-    }
-  ]) ++ [
-    ./patch-qt-5.15.0-qtbase-limits.diff
-  ];
+  qt-src-qtbase-patches =
+    (makeRemotePatchesWithPrefix "qtbase" [
+      {
+        url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/6.x.x/patches/android-backtrace.diff";
+        hash = "sha256-/el09OJR/e0NUfGTxEtsx1Gk/JfdzNhC7VsfBVfp+BU=";
+      }
+      {
+        url = "https://github.com/conan-io/conan-center-index/raw/1b24f7c74/recipes/qt/6.x.x/patches/android-new-ndk.diff";
+        hash = "sha256-EwJoRjF6SFDVsDxztiJMqqj/KoaNs/WIhVQqKBgBqMY=";
+      }
+    ])
+    ++ [
+      #./patch-qt-5.15.0-qtbase-limits.diff
+    ];
 
   qt-src = pkgs.applyPatches {
     name = "${qt-src-archive-full.name}-patched";
@@ -57,13 +62,13 @@ let
   androidComposition = pkgs.androidenv.composeAndroidPackages (with androidPackagesVersions; {
     cmdLineToolsVersion = cmdLineTools;
     platformToolsVersion = platformTools;
-    buildToolsVersions = [ buildTools ];
-    platformVersions = [ platform ];
+    buildToolsVersions = [buildTools];
+    platformVersions = [platform];
     # includeSources = true;
-    abiVersions = [ "x86_64" ];
+    abiVersions = ["x86_64"];
     includeNDK = true;
     ndkVersion = ndk;
-    cmakeVersions = [ cmake ];
+    cmakeVersions = [cmake];
   });
 
   androidsdk = androidComposition.androidsdk;
@@ -93,15 +98,16 @@ let
   envVarsToShell = envVars:
     lib.concatStringsSep "\n" (
       lib.attrsets.mapAttrsToList (name: value: "export ${name}=${value}") envVars
-    )
-  ;
+    );
 
   # ===========================================================================
 
-  envVars = androidEnvVars // {
-    JDK_PATH = "${jdk.home}";
-    JAVA_HOME = "${jdk.home}";
-  };
+  envVars =
+    androidEnvVars
+    // {
+      JDK_PATH = "${jdk.home}";
+      JAVA_HOME = "${jdk.home}";
+    };
 
   # ===========================================================================
 
@@ -150,33 +156,45 @@ let
     # "qtxmlpatterns"
   ];
 
-  configureFlags = [
-    "-opensource"
-    "-confirm-license"
-    "-release"
+  configureFlags =
+    [
+      "-opensource"
+      "-confirm-license"
+      "-release"
 
-    "-shared"
-    # "-static"
+      "-shared"
+      # "-static"
 
-    # "-platform" "linux-clang"
-    "-xplatform" "android-clang"
+      # "-platform" "linux-clang"
+      "-xplatform"
+      "android-clang"
 
-    "-c++std" "c++17"
-    "-disable-rpath"
-    "-no-pch"
-    "-no-warnings-are-errors"
+      "-c++std"
+      "c++17"
+      "-disable-rpath"
+      "-no-pch"
+      "-no-warnings-are-errors"
 
-    "-android-sdk" "${androidEnvVars.ANDROID_SDK_ROOT}"
-    "-android-ndk" "${androidEnvVars.ANDROID_NDK_ROOT}"
-    "-android-ndk-platform" "${androidEnvVars.ANDROID_NDK_PLATFORM}"
-    "-android-ndk-host" "${androidEnvVars.ANDROID_NDK_HOST}"
-    "-android-abis" "${androidEnvVars.ANDROID_ABI}"
-  ] ++ (
-    lib.lists.concatMap (x: ["-skip" x]) configureFlagsSkipList
-  ) ++ [
-    "-nomake" "tests"
-    "-nomake" "examples"
-  ];
+      "-android-sdk"
+      "${androidEnvVars.ANDROID_SDK_ROOT}"
+      "-android-ndk"
+      "${androidEnvVars.ANDROID_NDK_ROOT}"
+      "-android-ndk-platform"
+      "${androidEnvVars.ANDROID_NDK_PLATFORM}"
+      "-android-ndk-host"
+      "${androidEnvVars.ANDROID_NDK_HOST}"
+      "-android-abis"
+      "${androidEnvVars.ANDROID_ABI}"
+    ]
+    ++ (
+      lib.lists.concatMap (x: ["-skip" x]) configureFlagsSkipList
+    )
+    ++ [
+      "-nomake"
+      "tests"
+      "-nomake"
+      "examples"
+    ];
 
   # ===========================================================================
 
@@ -270,7 +288,6 @@ let
 
   '';
 
-
   qt5-for-android-builder = pkgs.buildFHSEnv {
     name = "qt5-for-android-builder";
     targetPkgs = pkgs: [
@@ -288,7 +305,6 @@ let
       jdk
       gradle
 
-
       qt-src
 
       script-run-build-drv
@@ -296,8 +312,8 @@ let
 
     runScript = "/bin/run-build.sh";
   };
-
   # ===========================================================================
 in
-qt5-for-android-builder
+  qt5-for-android-builder
 # // { inherit qt-src; }
+
