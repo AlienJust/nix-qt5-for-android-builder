@@ -65,7 +65,7 @@
     buildToolsVersions = [buildTools];
     platformVersions = [platform];
     # includeSources = true;
-    abiVersions = ["x86_64"];
+    abiVersions = ["armeabi-v7a" "x86_64"];
     includeNDK = true;
     ndkVersion = ndk;
     cmakeVersions = [cmake];
@@ -85,7 +85,7 @@
     ANDROID_NDK_PLATFORM = "android-${androidPackagesVersions.platform}";
     ANDROID_NDK_HOST = "linux-x86_64";
 
-    ANDROID_ABI = "x86_64";
+    ANDROID_ABI = "armeabi-v7a";
   };
 
   # ===========================================================================
