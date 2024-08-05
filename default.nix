@@ -122,7 +122,7 @@
     # "qtdeclarative"
     "qtdoc"
     "qtgamepad"
-    "qtgraphicaleffects"
+    # "qtgraphicaleffects"
     # "qtimageformats"
     # "qtlocation"
     "qtlottie"
