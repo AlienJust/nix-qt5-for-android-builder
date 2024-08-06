@@ -52,10 +52,12 @@
 
   androidPackagesVersions = {
     cmdLineTools = "13.0";
+    #cmdLineTools = "10.0";
     platformTools = "35.0.1";
     buildTools = "23.0.0";
     platform = "23";
     ndk = "25.1.8937393";
+    #ndk = "21.4.7075529";
     cmake = "3.22.1";
   };
 
@@ -65,7 +67,7 @@
     buildToolsVersions = [buildTools];
     platformVersions = [platform];
     # includeSources = true;
-    abiVersions = ["armeabi-v7a" "x86_64"];
+    abiVersions = ["armeabi-v7a" "arm64-v8a" "x86_64"];
     includeNDK = true;
     ndkVersion = ndk;
     cmakeVersions = [cmake];
